@@ -1,0 +1,20 @@
+[tasks.init]
+run = "cp .env.example .env"
+
+[tasks.up]
+run = "docker compose up -d"
+
+[tasks.down]
+run = "docker compose down"
+
+[tasks.build]
+run = "docker compose build"
+
+[tasks.destroy]
+run = "docker compose down --volumes --remove-orphans"
+
+[tasks.wp]
+run = "docker compose run --rm wp-cli wp"
+
+[tasks.bash]
+run = "docker compose exec wordpress bash"

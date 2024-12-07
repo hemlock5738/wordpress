@@ -1,0 +1,49 @@
+services:
+  wordpress:
+    image: wordpress:${WORDPRESS_CONTAINER_IMAGE_TAG:-latest}
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: maria
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: maria
+      WORDPRESS_DEBUG: true
+    volumes:
+      - type: bind
+        source: ${PWD}/html
+        target: /var/www/html
+
+  mariadb:
+    image: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=true
+      - MARIADB_DATABASE=maria
+      - MARIADB_USER=maria
+      - MARIADB_PASSWORD=password
+    volumes:
+      - type: volume
+        source: mariadb-data-volume
+        target: /var/lib/mysql
+
+  wp-cli:
+    image: wordpress:${WPCLI_CONTAINER_IMAGE_TAG:-cli}
+    command: --info
+    working_dir: /var/www/html
+    profiles:
+      - extra
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: maria
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: maria
+      WORDPRESS_DEBUG: false
+    volumes:
+      - type: bind
+        source: ${PWD}/html
+        target: /var/www/html
+
+volumes:
+  mariadb-data-volume:
